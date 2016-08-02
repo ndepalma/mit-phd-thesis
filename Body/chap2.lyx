@@ -1,0 +1,1562 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass mitthesis
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding auto
+\fontencoding default
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 0
+\use_mathdots 0
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 2
+\paperpagestyle plain
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Chapter
+Design of antimicrobial peptides
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "chapter:amps"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+In the previous chapter, I introduced grammars as a generalized method for
+ modeling motifs in sequences of characters.
+ In addition, I presented a detailed look at the Teiresias motif discovery
+ tool.
+ In this, the second chapter of my thesis, I show how Teiresias can be used
+ to derive sets of regular grammars describing a particular class of protein
+ sequences --- antimicrobial peptides.
+ In what follows, I present a general background on antimicrobial peptides
+ and then provide a rationale for why these peptides are particularly well--suit
+ed for being modeled using regular grammars.
+ I detail the construction of an annotation tool for finding new antimicrobial
+ peptides and validating the general hypothesis that regular grammars can
+ be used as a sensitive and specific indicator of antimicrobial function
+ in peptide sequences.
+ Next, I describe the preliminary design of synthetic antimicrobial peptides
+ using an evolutionary approach, which, although ultimately inconclusive,
+ provided motivation for a more focused design.
+ The final section of this chapter describes a more focused design approach,
+ detailing the successful construction of numerous novel peptides with strong
+ antimicrobial activity against a wide spectrum of bacteria.
+\end_layout
+
+\begin_layout Standard
+The research described in this chapter is drawn largely from a publication
+ that is in preparation in collaboration with Christopher Loose, Isidore
+ Rigoutsos, and Gregory Stephanopoulos.
+ (Some experimental work in Section
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand vref
+reference "section:preliminary"
+
+\end_inset
+
+ was also performed by Gyoo Yeol Jung.) Throughout this chapter, the use
+ of the pronoun 
+\begin_inset Quotes eld
+\end_inset
+
+we
+\begin_inset Quotes erd
+\end_inset
+
+ refers to this group of authors.
+\end_layout
+
+\begin_layout Section
+Motivation
+\end_layout
+
+\begin_layout Standard
+Antimicrobial peptides are small proteins that attack and kill microbes.
+ These peptides are effectors of the innate immune system: the phylogenetically
+ ancient first line of defense against pathogen assault
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rolff2003invertebrate,kimbrell2001evolution"
+
+\end_inset
+
+.
+ Antimicrobial peptides are ubiquitous amongst multicellular eukaryotes
+ and found in diverse contexts including frog skin
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "simmaco1999antimicrobial"
+
+\end_inset
+
+, scorpion venom
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "moerman2002antibacterial"
+
+\end_inset
+
+, and human sweat
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "schittek2001dermcidin"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+There is a growing interest in antimicrobial peptides, due largely to the
+ proliferation of multi--drug resistant pathogen strains
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "cassell2001development"
+
+\end_inset
+
+.
+ These strains are resistant to one or more common antibiotics such as penicilli
+n, tetracylin, or vanocomycin.
+ In the United States alone, the cost of treating and preventing infections
+ by these pathogens is estimated to be many billions of dollars annually
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "harrison1998antimicrobial"
+
+\end_inset
+
+.
+ In the arms race against microbes, mankind is losing --- only a single
+ new class of antibiotics was developed in the past 30 years
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "normark2002evolution,     walsh2000molecular"
+
+\end_inset
+
+.
+ However, there is mounting evidence that antimicrobial peptides are less
+ likely to induce bacterial resistance and will make a strong contribution
+ to our therapeutic arsenal 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zasloff2002antimicrobial,zasloff2002antimicrobialpeptides,ge1999invitro"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Human antimicrobial peptides, such as the defensins and cathelicidins, help
+ to maintain a passive defense against pathogens in the environment.
+ A malfunction of these peptides leads to severely immunocompromised phenotypes.
+ For example, a deficiency of the LL-37 cathelicidin leads to morbus Kostmann,
+ a congenital neutropenia characterized by recurrent bacterial infection
+ and short life--expectancy
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "putsep2002deficiency,bowman2003antibacterial"
+
+\end_inset
+
+.
+ In addition, the pathogenesis of cystic fibrosis (CF) is indirectly caused
+ by antimicrobial peptide impairment
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "ganz2003defensins"
+
+\end_inset
+
+.
+ CF patients have a defective Cl
+\begin_inset Formula $^{-}$
+\end_inset
+
+ ion channel in the pulmonary airway epithelia that causes unusually high
+ salt concentrations.
+ The salt disrupts the function of the epithelial defensins, leading to
+ chronic infections and ensuing respiratory failure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "smith1996cystic,zasloff2002antimicrobial"
+
+\end_inset
+
+.
+ More severe phenotypes have been produced in loss--of--function animal
+ models.
+ For example, Wilson 
+\emph on
+et.
+ al.
+\emph default
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "wilson1999regulation"
+
+\end_inset
+
+ showed that mice with depressed defensin activity required a 10--fold lower
+ dose of the 
+\emph on
+S.
+ typhimurium
+\emph default
+ pathogen to produce a fatality.
+ In contrast, gain--of--function mice expressing human enteric defensin
+ HBD--5 have a markedly increased resistance to 
+\emph on
+S.
+ typhimurium
+\emph default
+ assault
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "salzman2003protection"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In addition to their more publicized antibiotic capabilities, antimicrobial
+ peptides appear to be important in a variety of other diseases.
+ For example, the antimicrobial peptides of 
+\emph on
+Anopheles gambiae
+\emph default
+, the malaria mosquito, are upregulated after malaria (
+\emph on
+Plasmodium berghei
+\emph default
+) infection
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "christophides2002immunity"
+
+\end_inset
+
+ and, in some cases, are capable of killing the ookinetes of the parasite
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "barillas2000mosquito,vizioli2001gambicin"
+
+\end_inset
+
+.
+ Antimicrobial peptides are also indicated in a resistance to the AIDS--causing
+ virus, HIV\SpecialChar \@.
+ Long--term HIV nonprogressors display elevated levels of 
+\begin_inset Formula $\alpha$
+\end_inset
+
+--defensins that inhibit the proliferation of the virus
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zhang2002contribution"
+
+\end_inset
+
+.
+ Finally, a limited class of antimicrobial peptides may form the basis for
+ novel cancer treatments
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "kim2003invitro,ellerby1999anticancer"
+
+\end_inset
+
+.
+ For example, the antimicrobial peptide tachyplesin can repress the growth
+ of cancerous tumors both 
+\emph on
+in vitro
+\emph default
+ and 
+\emph on
+in vivo
+\emph default
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "chen2001rgdtachyplesin"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The many disease--relevant behaviors of antimicrobial peptides are a result
+ of their ability to broadly distinguish eukaryotic cells from pathogenic
+ invaders.
+ There are two features that give the peptides this ability: a net positive
+ charge and an amphipathic 3--D structure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "giangaspero2001amphipathic,epand1999diversity"
+
+\end_inset
+
+.
+ These features endow the peptide with an affinity for negatively charged
+ outer leaflet of the bacterial cytoplasmic membrane (see Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand vref
+reference "fig:peptideAction"
+
+\end_inset
+
+).
+ This affinity leads to permeablization of the bacterial membrane, which
+ is the basis for the bactericidal activity of antimicrobial peptides.
+ Although this mode of action is common to almost all antimicrobial peptides,
+ there are many diverse primary sequences that can produce this behavior.
+ These sequences form a handful of conserved families, the most common of
+ which are the 
+\begin_inset Formula $\alpha$
+\end_inset
+
+--helical and 
+\begin_inset Formula $\beta$
+\end_inset
+
+--sheet antimicrobial peptides 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "tossi2000amphipathic"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement phtb
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+  
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Argument
+status collapsed
+
+\begin_layout Plain Layout
+Antimicrobial peptide action
+\end_layout
+
+\end_inset
+
+ Antimicrobial peptide action.
+ In the figure above, amphipathic antimicrobial peptides with net positive
+ charges are attracted via electrostatic forces to the negatively charged
+ outer--leaflet of the microbial membrane (step 1)
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zasloff2002antimicrobial"
+
+\end_inset
+
+.
+ This membrane is either the lipopolysaccharide layer or the peptidoglycan
+ layer of gram--negative and gram--positive bacteria, respectively
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "epand1999diversity"
+
+\end_inset
+
+.
+ In addition, the 
+\begin_inset Formula $\beta$
+\end_inset
+
+--1,3--glucan in fungal membranes and the phosphoglycan of certain parasites
+ can give membrane characteristics that are exploited by certain classes
+ of antimicrobial peptides.
+ The peptides cover and lyse the membrane via either a 
+\begin_inset Quotes eld
+\end_inset
+
+barrel stave
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+carpet
+\begin_inset Quotes erd
+\end_inset
+
+ mechanism (step 2)
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "shai2002mode"
+
+\end_inset
+
+.
+ Although some antimicrobial peptides are hemolytic, in general, they are
+ not damaging to multicellular organisms because 1) the negatively charged
+ phosphatydilserines of their outer leaflet are sequestered on the cytoplasmic
+ side of the membrane, and 2) the membranes are stabilized by cholesterols
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zasloff2002antimicrobial"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:peptideAction"
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand vref
+reference "fig:aurein"
+
+\end_inset
+
+ shows the structure of aurein--1.2, an archetypal alpha helical antimicrobial
+ peptide from the Australian Southern bell frog
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "wang2005correlation"
+
+\end_inset
+
+.
+ Alpha helical AmPs form the largest single family of AmPs.
+ They are particularly common in amphibians because species such as frogs
+ tend to inhabit wet and warm ecological niches that are conducive to the
+ proliferation of bacteria.
+ (See Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:frogAmps"
+
+\end_inset
+
+ for a phylogenetic tree of the more than 400 amphibian AmPs.) Alpha helical
+ AmPs tend, in general, to have a amphipathic structure in which positively
+ charged residues are segregated on to a particular side of the longitudinal
+ axis of the helix.
+ Negatively charged or neutral residues tend to be isolated on the opposite
+ side from the positively charged residues.
+ Evidence suggests that this confirmation allows the peptide to position
+ itself judiciously relative to the bacterial membrane, facilitating entry
+ of the peptide into the membrane and, ultimately, membrane disruption
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zasloff2002antimicrobial"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement ptb
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+A) Ball and stick 
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Images-chap2/1vm5-balls.png
+	width 2in
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset VSpace smallskip
+\end_inset
+
+B) Ribbon 
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Images-chap2/1vm5-ribbon.png
+	width 2in
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset VSpace smallskip
+\end_inset
+
+C) Peptide wheel view 
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Images-chap2/pepwheel.pdf
+	width 2in
+	rotateAngle 90
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Argument
+status collapsed
+
+\begin_layout Plain Layout
+The structure of aurein
+\end_layout
+
+\end_inset
+
+The structure of aurein--1.2
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "wang2005correlation"
+
+\end_inset
+
+.
+ Aureins constitute a large family of secreted proteins originally isolated
+ from the skin of frogs.
+ This particular structure was isolated from the Australian Southern bell
+ frog.
+ The peptide conforms to the classic amphipathic alpha helical structure
+ and has wide--spectrum antimicrobial activity.
+ Part A) shows a ball--and--stick representation of the structure in which
+ nitrogen atoms are colored blue and oxygen atoms are colored red.
+ Part B) shows the same structure using a cartoon representation that clearly
+ shows the alpha helix.
+ Finally, part C) shows a helical wheel projection in which uncharged residues
+ are boxed in order to highlight the segregation of charges on the helix.
+ Graphics created using PyMol (DeLano Scientific, San Carlos, CA, USA).
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:aurein"
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways true
+status open
+
+\begin_layout Plain Layout
+[ptb] 
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Images-chap2/frog-amps.pdf
+	width 90text%
+	rotateAngle 270
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Argument
+status collapsed
+
+\begin_layout Plain Layout
+A phylogenetic tree of amphibian antimicrobial peptides
+\end_layout
+
+\end_inset
+
+ A phylogenetic tree of amphibian AmPs.
+ Because they tend to inhabit environments that are conducive to the growth
+ of bacteria, amphibians are under evolutionary pressure to develop numerous
+ and varied AmPs.
+ This tree shows the degree of sequence similarity for over 400 AmPs isolated
+ from amphibian sources.
+ As the figure shows, amphibians have many families of AmPs, some of which
+ are only distantly related, including the aureins, bombinins, bombesins,
+ and brevinins.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:frogAmps"
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The characteristic membrane--attack of antimicrobial peptides is the primary
+ rationalization of the peptides' propensity to not induce bacterial resistance
+ to the same degree as small molecule pharmaceuticals.
+ That is, because the peptides leverage a pervasive polygenic trait of bacteria,
+ the structure of the cell wall, it is 
+\begin_inset Quotes eld
+\end_inset
+
+expensive
+\begin_inset Quotes erd
+\end_inset
+
+ for the bacteria to evolve a resistance 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zasloff2002antimicrobial,zasloff2002antimicrobialpeptides"
+
+\end_inset
+
+.
+ For this reason, many companies are developing therapeutics based on antimicrob
+ial peptides, many of which are in phase III FDA trials 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "hancock2002clinical"
+
+\end_inset
+
+.
+ Even more encouraging, some peptides show strong 
+\emph on
+in vitro
+\emph default
+ bactericidal activity against pathogen strains that have developed a resistance
+ to multiple conventional antibiotics
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "ge1999invitro,tiozzo1998wide,strom2003pharmacophore"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+A grammatical approach to annotating AmPs
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "section:annotation"
+
+\end_inset
+
+ Our preliminary studies of natural AmPs indicated that their amphipathic
+ structure gives rise to a modularity among the different AmP amino acid
+ sequences.
+ The repeated usage of sequence modules --- which may be a relic of evolutionary
+ divergence and radiation --- is reminiscent of phrases in a natural language,
+ such as English.
+ For example, the grammar 
+\family typewriter
+Q.EAG.L.K..K
+\family default
+ (the 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family typewriter
+.
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+ is a 
+\begin_inset Quotes eld
+\end_inset
+
+wildcard
+\begin_inset Quotes erd
+\end_inset
+
+, which indicates that any amino acid will suffice at that position in the
+ grammar) is present in over 90% of cecropins, an AmP common in insects.
+ Based on this observation we modeled the AmP sequences as a formal language
+ --- a set of sentences using characters from a fixed alphabet, in this
+ case the alphabet of amino acid one--letter symbols
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "jurafsky2000speech"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We conjectured that the 
+\begin_inset Quotes eld
+\end_inset
+
+language of AmPs
+\begin_inset Quotes erd
+\end_inset
+
+ could be described by a set of regular grammars and that these grammars,
+ in turn, could be used to annotate and design novel AmPs.
+ As discussed in Chapter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chapter:intro"
+
+\end_inset
+
+, regular grammars are, in essence, simple rules for describing the allowed
+ arrangements of characters.
+ These grammars, such as the cecropin grammar mentioned previously, are
+ commonly written as regular expressions and are widely used to describe
+ patterns in nucleotide and amino acid sequences
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "searls2002language,hofmann1999prosite"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+To find a set of grammars describing AmPs we used the Teiresias pattern
+ discovery tool
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "rigoutsos1998combinatorial"
+
+\end_inset
+
+ (see Section
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand vref
+reference "section:teiresias"
+
+\end_inset
+
+ to discover an exhaustive, maximal set of regular grammars in a collection
+ of antimicrobial peptides assembled from a variety of sources.
+\end_layout
+
+\begin_layout Subsection
+Collecting a database of antimicrobial peptides
+\end_layout
+
+\begin_layout Standard
+Our collection of known antimicrobial peptides was taken principally from
+ two databases: the Antimicrobial Sequences Database () 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "tossi2002antimicrobial"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "bairoch2000swiss-prot"
+
+\end_inset
+
+.
+ The contains about 750 antimicrobial peptides, all of which are a subset
+ of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+ .
+ Some of the entries in the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ are sequence fragments that are derived from larger precursors via post--transl
+ational modification.
+ We discarded these peptides unless the reported antimicrobial fragment
+ comprised at least 80% of the length of its parent sequence.
+ From the remaining entries, we selected all that were from eukaryotic organisms
+, including the complete length of the parent peptides in our database.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand include
+filename "Images-chap2/antimicrobialnames"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ is a database of about 120 thousand heavily annotated sequences.
+ Included in the annotations are keywords grouping proteins into functional
+ categories.
+ For our initial database of antimicrobial peptides we extracted all the
+ eukaryotic sequences matching the keywords 
+\begin_inset Quotes eld
+\end_inset
+
+antibiotic
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+fungicidal
+\begin_inset Quotes erd
+\end_inset
+
+, or 
+\begin_inset Quotes eld
+\end_inset
+
+defensin
+\begin_inset Quotes erd
+\end_inset
+
+.
+ These sequences were added to the peptides we collected from the 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Using the sequences that we extracted from 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ and 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+, we made a list of common antimicrobial peptide names --- such as 
+\begin_inset Quotes eld
+\end_inset
+
+defensin
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+tenesin
+\begin_inset Quotes erd
+\end_inset
+
+ --- and collected sequences from 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ matching these names.
+ From the name--matched sequences, we manually selected those eukaryotic
+ sequences that had literature evidence of antimicrobial activity but were
+ not explicitly labeled as such in 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+.
+ These sequences, together with the sequences from 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ and the first set from 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+, formed our initial database of antimicrobial peptides.
+ In the following section, we describe how these sequences were used, via
+ a homology--based bootstrapping method, to find even more antimicrobial
+ peptides within 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Finding more antimicrobial peptides
+\end_layout
+
+\begin_layout Standard
+A minority of the antimicrobial peptides within 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+, were not found using either the keyword or 
+\begin_inset Quotes eld
+\end_inset
+
+common--name
+\begin_inset Quotes erd
+\end_inset
+
+ searches.
+ To find these sequences we used two approaches in parallel.
+ First, we used a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+sequence alignment based approach.
+ Second, we used a grammar matching--based approach with 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+.
+ Both of these approaches are detailed below and summarized in Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:bootstrapping"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement ptb
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Images-chap2/bootstrap.pdf
+
+\end_inset
+
+ 
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Argument
+status collapsed
+
+\begin_layout Plain Layout
+Schematic of the bootstrapping method.
+\end_layout
+
+\end_inset
+
+ A schematic of the bootstrapping method used to collect antimicrobial sequences
+ from 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+ .
+ On the left, using 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+, we computed an 8/8/2 grammar set (
+\begin_inset Formula $C_{i}^{8/2/2}$
+\end_inset
+
+) from the initial set of sequences, 
+\begin_inset Formula $S_{0}$
+\end_inset
+
+.
+ These grammars were masked from 
+\begin_inset Formula $S_{0}$
+\end_inset
+
+ to make 
+\begin_inset Formula $S_{0}\mid_{\textrm{m--}8/8/2}$
+\end_inset
+
+, from which the 6/15/2 grammar set, 
+\begin_inset Formula $C_{0}\mid_{\textrm{m--}8/2/2}^{6/15/2}$
+\end_inset
+
+, was found using 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ again.
+ The two grammar sets were combined and processed (see Appendix) to make
+ 
+\begin_inset Formula $\phi'$
+\end_inset
+
+.
+ This final grammar set was used to find more antimicrobial sequences in
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+.
+ On the right side of the schematic, sequences from 
+\begin_inset Formula $S_{0}$
+\end_inset
+
+ were aligned against 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ to find new antimicrobial sequences.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:bootstrapping"
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Seeding the peptide database through similarity searching
+\end_layout
+
+\begin_layout Subsubsection
+Seeding the peptide database through use of grammar discovery
+\end_layout
+
+\begin_layout Standard
+electivity and sensitivity of the grammars for antimicrobial peptide sequences.
+ Finally, in each sequence from 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+, we searched for instances of grammars from 
+\begin_inset Formula $\phi'$
+\end_inset
+
+.
+ If 80% of the amino acids in a peptide from 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ were contained within instances of grammars from 
+\begin_inset Formula $\phi'$
+\end_inset
+
+ the peptide was marked.
+ Of the marked sequences, we selected those sequences that were from eukaryotic
+ organisms and had literature evidence of antimicrobial activity, calling
+ these sequences 
+\begin_inset Formula $S_{0}^{T}$
+\end_inset
+
+.
+\end_layout
+
+\end_body
+\end_document
