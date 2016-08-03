@@ -1,12 +1,14 @@
-# MIT Ph.D. Thesis template in LaTeX
+# MIT Ph.D. Thesis template in LyX
 
-This is a [LaTeX](http://www.latex-project.org/) template for a Ph.D. thesis at [MIT](http://web.mit.edu).  As far as I know, it conforms to all the [requirements](http://libraries.mit.edu/archives/thesis-specs/), at least as of 2006 when I submitted it.  There are a few things to note:
+This project is a port of the popular LaTeX template by [Kyle Jensen](https://github.com/kljensen). I enjoy as much WYSIWYG as I can get and LyX has always been a nice in-between. This is literally a port of Kyle's thesis content so the dissertation itself is his. Big thank you to Kyle for providing such a well formed template to work with. 
 
-* The final output can be found here: [Kyle Jensen's MIT Ph.D. thesis](http://cloud.github.com/downloads/kljensen/mit-phd-thesis/kljensen-mit-phd-thesis.pdf)
-* I'm sure successfully compiling the LaTeX document will require some debugging.
-* There are a number of dependencies including tetex, pdflatex, and the [Adobe Caslon Pro](http://en.wikipedia.org/wiki/Caslon) font by default.
-* The main LaTeX file is just a skeleton that includes chapters in the Body/ directory using the LaTeX "\input" command.
-* You can turn off the 2-sided mode in main.tex.
+This is a [LyX](https://www.lyx.org/) template for a Ph.D. thesis at [MIT](http://web.mit.edu).
 
-Kyle  
-<kljensen@gmail.com>
+Here are the instructions to get going:
+
+* Make sure you perofrm all of the needed instructions by Kyle in [his original project](https://github.com/kljensen/mit-phd-thesis).
+* You'll need to install the class file to your $TEXMF directory. I tried to make this as easy as possible with the cls2layout.sh script. You can run it with a simple:
+
+``bash
+$ ./cls2layout.sh mitthesis.cls
+``
