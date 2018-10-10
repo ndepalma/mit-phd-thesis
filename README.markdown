@@ -14,4 +14,4 @@ $ ./cls2layout.sh mitthesis.cls
 ``
 <br/>
 
-Final note: It can be done! I have successfully graduated in 2017 using this template. :-) 
+Final note: It can be done! I successfully graduated in 2017 using this template. :-) 
