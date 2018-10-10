@@ -12,4 +12,6 @@ Here are the instructions to get going:
 ``bash
 $ ./cls2layout.sh mitthesis.cls
 ``
+<br/>
+
 Final note: It can be done! I have successfully graduated in 2017 using this template. :-) 
