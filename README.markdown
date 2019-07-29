@@ -10,8 +10,12 @@ Here are the instructions to get going:
 * You'll need to install the class file to your $TEXMF directory. I tried to make this as easy as possible with the cls2layout.sh script. You can run it with a simple:
 
 ``bash
-$ ./cls2layout.sh mitthesis.cls
+$ ./cls2layout.sh mitthesis.cls /my/lyx/user/directory
 ``
+
+See [the LyX documentation](https://wiki.lyx.org/LyX/UserDir) regarding the location of the LyX user directory.
+At time of writing, this is `~/.lyx` for Linux and `~/Library/Application Support/LyX-<VERSION>` for OSX.
+
 <br/>
 
 Final note: It can be done! I successfully graduated in 2017 using this template. :-) 
